@@ -1,67 +1,27 @@
-import { AsyncPipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component } from '@angular/core';
 
-interface Member {
-  id: number;
-  name: string;
-}
+import { CounterComponent } from './counter/counter.component';
+import { TickComponent } from './tick/tick.component';
+import { UsersComponent } from './users/users.component';
+import { AsyncUsersComponent } from './async-users/async-users.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [AsyncPipe],
+  imports: [
+    CounterComponent,
+    TickComponent,
+    UsersComponent,
+    AsyncUsersComponent,
+  ],
   template: `
-    <h3>Property update in an event</h3>
-    <p>Counter: {{ counter }}</p>
-    <button (click)="incrementCounter()">Increment counter</button>
-    <hr />
+    <app-counter />
 
-    <!-- <h3>Property update asynchronously</h3>
-    <p>Tick: {{ tick }}</p>
-    <hr /> -->
+    <!-- <app-tick /> -->
 
-    <!-- <h3>Property update from an observable</h3>
-    @for (member of members; track member.id) {
-    <p>
-      {{ member.name }}
-    </p>
-    }
-    <hr /> -->
+    <!-- <app-users /> -->
 
-    <!-- <h3>Property update from an observable using async pipe</h3>
-    @for (member of members$ | async; track member.id) {
-    <p>
-      {{ member.name }}
-    </p>
-    }
-    <hr /> -->
+    <!-- <app-async-users /> -->
   `,
 })
-export class AppComponent implements OnInit, OnDestroy {
-  readonly #API_URL = 'https://jsonplaceholder.typicode.com/users';
-  readonly #http = inject(HttpClient);
-
-  counter = 0;
-
-  tick = 0;
-
-  members: Member[] = [];
-  #membersSub = this.#http
-    .get<Member[]>(this.#API_URL)
-    .subscribe((members) => (this.members = members));
-
-  members$ = this.#http.get<Member[]>(this.#API_URL);
-
-  ngOnInit(): void {
-    setInterval(() => this.tick++, 1000);
-  }
-
-  ngOnDestroy(): void {
-    this.#membersSub.unsubscribe();
-  }
-
-  incrementCounter() {
-    this.counter++;
-  }
-}
+export class AppComponent {}
