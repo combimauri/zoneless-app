@@ -1,14 +1,14 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 import { UsersService } from '../core/users.service';
-import { User } from '../core/user.model';
 
 @Component({
   selector: 'app-users',
   standalone: true,
   template: `
     <h3>Property update from an observable</h3>
-    @for (user of users; track user.id) {
+    @for (user of users(); track user.id) {
     <p>
       {{ user.name }}
     </p>
@@ -16,15 +16,8 @@ import { User } from '../core/user.model';
     <hr />
   `,
 })
-export class UsersComponent implements OnDestroy {
+export class UsersComponent {
   readonly #usersService = inject(UsersService);
 
-  users: User[] = [];
-  #usersSub = this.#usersService
-    .getUsers()
-    .subscribe((users) => (this.users = users));
-
-  ngOnDestroy(): void {
-    this.#usersSub.unsubscribe();
-  }
+  users = toSignal(this.#usersService.getUsers(), { initialValue: [] });
 }
